@@ -21,4 +21,5 @@ submit training $JOB_NAME \
 --config=youtube-8m/cloudml-gpu.yaml \
 -- --input_data_pattern='gs://youtube8m-ml/1/video_level/test/test*.tfrecord' \
 --train_dir=$BUCKET_NAME/${JOB_TO_EVAL} \
+--feature_names="mean_rgb, mean_audio" --feature_sizes="1024, 128" \
 --output_file=$BUCKET_NAME/${JOB_TO_EVAL}/predictions.csv

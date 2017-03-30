@@ -47,7 +47,12 @@ if __name__ == "__main__":
   flags.DEFINE_string("feature_names", "mean_rgb", "Name of the feature "
                       "to use for training.")
   flags.DEFINE_string("feature_sizes", "1024", "Length of the feature vectors.")
-
+  flags.DEFINE_bool(
+    "use_second_pattern", False,
+    "Whether we want to use evaluation data set for train.")
+  flags.DEFINE_string(
+    "second_data_pattern", "",
+    "Path for evaluation dataset ")
   # Model flags.
   flags.DEFINE_bool(
       "frame_features", False,
@@ -173,6 +178,51 @@ def get_input_data_tensors(reader,
         allow_smaller_final_batch=True,
         enqueue_many=True)
 
+def get_input_two_data_tensors(reader,
+                           data_pattern, data_pattern_2, 
+                           batch_size=1000,
+                           num_epochs=None,
+                           num_readers=1):
+  """Creates the section of the graph which reads the training data.
+
+  Args:
+    reader: A class which parses the training data.
+    data_pattern: A 'glob' style path to the data files.
+    batch_size: How many examples to process at a time.
+    num_epochs: How many passes to make over the training data. Set to 'None'
+                to run indefinitely.
+    num_readers: How many I/O threads to use.
+
+  Returns:
+    A tuple containing the features tensor, labels tensor, and optionally a
+    tensor containing the number of frames per video. The exact dimensions
+    depend on the reader being used.
+
+  Raises:
+    IOError: If no files matching the given pattern were found.
+  """
+  logging.info("Using batch size of " + str(batch_size) + " for training.")
+  with tf.name_scope("train_input"):
+    files = gfile.Glob(data_pattern)
+    files.extend(gfile.Glob(data_pattern_2))
+    if not files:
+      raise IOError("Unable to find training files. data_pattern='" +
+                    data_pattern + "'.")
+    logging.info("Number of training files: %s.", str(len(files)))
+    filename_queue = tf.train.string_input_producer(
+        files, num_epochs=num_epochs, shuffle=True)
+    training_data = [
+        reader.prepare_reader(filename_queue) for _ in range(num_readers)
+    ]
+
+    return tf.train.shuffle_batch_join(
+        training_data,
+        batch_size=batch_size,
+        capacity=batch_size * 5,
+        min_after_dequeue=batch_size,
+        allow_smaller_final_batch=True,
+        enqueue_many=True)
+
 
 def find_class_by_name(name, modules):
   """Searches the provided modules for the named class and returns it."""
@@ -181,7 +231,7 @@ def find_class_by_name(name, modules):
 
 def build_graph(reader,
                 model,
-                train_data_pattern,
+                train_data_pattern, 
                 label_loss_fn=losses.CrossEntropyLoss(),
                 batch_size=1000,
                 base_learning_rate=0.01,
@@ -191,7 +241,7 @@ def build_graph(reader,
                 clip_gradient_norm=1.0,
                 regularization_penalty=1,
                 num_readers=1,
-                num_epochs=None):
+                num_epochs=None, second_pattern = False):
   """Creates the Tensorflow graph.
 
   This will only be called once in the life of
@@ -240,13 +290,24 @@ def build_graph(reader,
   tf.summary.scalar('learning_rate', learning_rate)
 
   optimizer = optimizer_class(learning_rate)
-  unused_video_id, model_input_raw, labels_batch, num_frames = (
-      get_input_data_tensors(
-          reader,
-          train_data_pattern,
-          batch_size=batch_size * num_towers,
-          num_readers=num_readers,
-          num_epochs=num_epochs))
+
+  if second_pattern == True:
+    unused_video_id, model_input_raw, labels_batch, num_frames = (
+        get_input_two_data_tensors(
+            reader,
+            train_data_pattern[0],
+            train_data_pattern[1],
+            batch_size=batch_size * num_towers,
+            num_readers=num_readers,
+            num_epochs=num_epochs))
+  else:
+    unused_video_id, model_input_raw, labels_batch, num_frames = (
+        get_input_data_tensors(
+            reader,
+            train_data_pattern,
+            batch_size=batch_size * num_towers,
+            num_readers=num_readers,
+            num_epochs=num_epochs))
   tf.summary.histogram("model/input_raw", model_input_raw)
 
   feature_dim = len(model_input_raw.get_shape()) - 1
@@ -540,12 +601,16 @@ class Trainer(object):
 
     label_loss_fn = find_class_by_name(FLAGS.label_loss, [losses])()
     optimizer_class = find_class_by_name(FLAGS.optimizer, [tf.train])
+    if FLAGS.use_second_pattern:
+      train_data_pattern = [FLAGS.train_data_pattern, FLAGS.second_data_pattern]
+    else:
+      train_data_pattern = FLAGS.train_data_pattern
 
     build_graph(reader=reader,
                  model=model,
                  optimizer_class=optimizer_class,
                  clip_gradient_norm=FLAGS.clip_gradient_norm,
-                 train_data_pattern=FLAGS.train_data_pattern,
+                 train_data_pattern=train_data_pattern,
                  label_loss_fn=label_loss_fn,
                  base_learning_rate=FLAGS.base_learning_rate,
                  learning_rate_decay=FLAGS.learning_rate_decay,
@@ -553,7 +618,7 @@ class Trainer(object):
                  regularization_penalty=FLAGS.regularization_penalty,
                  num_readers=FLAGS.num_readers,
                  batch_size=FLAGS.batch_size,
-                 num_epochs=FLAGS.num_epochs)
+                 num_epochs=FLAGS.num_epochs, second_pattern = FLAGS.use_second_pattern)
 
     return tf.train.Saver(max_to_keep=0, keep_checkpoint_every_n_hours=0.25)
 

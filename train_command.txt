@@ -7,13 +7,13 @@ submit training $JOB_NAME \
 --config=youtube-8m/cloudml-gpu.yaml \
 -- --train_data_pattern='gs://youtube8m-ml-us-east1/1/video_level/train/train*.tfrecord' \
 --use_second_pattern=True --second_data_pattern='gs://youtube8m-ml-us-east1/1/video_level/validate/validate*.tfrecord' \
---model=MoeModel --moe_num_mixtures=4 --num_echoes=10 \
+--model=MoeModel --moe_num_mixtures=16 --num_echoes=5 \
 --feature_names="mean_rgb, mean_audio" --feature_sizes="1024, 128" \
---train_dir=$BUCKET_NAME/yt8m_train_video_level_moe_model_eval_2 --start_new_model
+--train_dir=$BUCKET_NAME/yt8m_train_video_level_moe_model_16_expert --start_new_model
 
 tensorboard --logdir=tensorboard --logdir=$BUCKET_NAME --port=8080
 
-JOB_TO_EVAL=yt8m_train_video_level_moe_model_with_eval
+JOB_TO_EVAL=yt8m_train_video_level_moe_model_16_expert
 JOB_NAME=yt8m_inference_$(date +%Y%m%d_%H%M%S); gcloud --verbosity=debug ml-engine jobs \
 submit training $JOB_NAME \
 --package-path=youtube-8m --module-name=youtube-8m.inference \
@@ -21,5 +21,7 @@ submit training $JOB_NAME \
 --config=youtube-8m/cloudml-gpu.yaml \
 -- --input_data_pattern='gs://youtube8m-ml/1/video_level/test/test*.tfrecord' \
 --train_dir=$BUCKET_NAME/${JOB_TO_EVAL} \
---feature_names="mean_rgb, mean_audio" --feature_sizes="1024, 128" \
---output_file=$BUCKET_NAME/${JOB_TO_EVAL}/predictions.csv
+--feature_names="mean_rgb, mean_audio" --feature_sizes="1024, 128" --batch_size=256 \
+--output_file=$BUCKET_NAME/${JOB_TO_EVAL}/predictions_moe16.csv
+
+gsutil cp --output_file=$BUCKET_NAME/${JOB_TO_EVAL}/predictions_eval_final.csv .

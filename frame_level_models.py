@@ -291,7 +291,8 @@ class BiLstmModel(models.BaseModel):
 
         # As we have Bi-LSTM, we have two output, which are not connected. So
         # merge them
-        state = tf.concat(2, state)
+        # state = tf.concat(2, state)
+        state = state[0] + state[1]
 
         return aggregated_model().create_model(
             model_input=state,

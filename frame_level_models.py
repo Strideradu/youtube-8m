@@ -269,8 +269,9 @@ class BiLstmModel(models.BaseModel):
         stacked_lstm_bw = tf.contrib.rnn.MultiRNNCell(
             [
                 tf.contrib.rnn.BasicLSTMCell(
-                    lstm_size, forget_bias=1.0, state_is_tuple=False)
+                    lstm_size, forget_bias=1.0)
                 for _ in range(number_of_layers)
+<<<<<<< HEAD
             ], state_is_tuple=False)
 
         #lstm_fw = tf.contrib.rnn.BasicLSTMCell(lstm_size, forget_bias=1.0, state_is_tuple=False)
@@ -278,6 +279,9 @@ class BiLstmModel(models.BaseModel):
         #lstm_bw = tf.contrib.rnn.BasicLSTMCell(lstm_size, forget_bias=1.0, state_is_tuple=False)
 
         loss = 0.0
+=======
+                ])
+>>>>>>> refs/remotes/google/master
 
         outputs, state = tf.nn.bidirectional_dynamic_rnn(
             stacked_lstm_fw,
@@ -294,7 +298,14 @@ class BiLstmModel(models.BaseModel):
         # state = tf.concat(2, state)
         state = state[0] + state[1]
 
+<<<<<<< HEAD
         return aggregated_model().create_model(
             model_input=state,
             vocab_size=vocab_size,
             **unused_params)
+=======
+    return aggregated_model().create_model(
+        model_input=state[-1].h,
+        vocab_size=vocab_size,
+        **unused_params)
+>>>>>>> refs/remotes/google/master

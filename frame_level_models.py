@@ -292,7 +292,7 @@ class BiLstmModel(models.BaseModel):
         # state = tf.concat(2, state)
         state = state[0] + state[1]
 
-    return aggregated_model().create_model(
-        model_input=state[-1].h,
-        vocab_size=vocab_size,
-        **unused_params)
+        return aggregated_model().create_model(
+            model_input=state[-1].h,
+            vocab_size=vocab_size,
+            **unused_params)

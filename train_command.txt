@@ -6,10 +6,9 @@ submit training $JOB_NAME \
 --staging-bucket=$BUCKET_NAME --region=us-east1 \
 --config=youtube-8m/cloudml-gpu.yaml \
 -- --train_data_pattern='gs://youtube8m-ml-us-east1/1/video_level/train/train*.tfrecord' \
---use_second_pattern=True --second_data_pattern='gs://youtube8m-ml-us-east1/1/video_level/validate/validate*.tfrecord' \
 --model=MoeModel --moe_num_mixtures=16 --num_echoes=5 \
 --feature_names="mean_rgb, mean_audio" --feature_sizes="1024, 128" \
---train_dir=$BUCKET_NAME/yt8m_train_video_level_moe_model_16_expert --start_new_model
+--train_dir=$BUCKET_NAME/yt8m_train_video_level_moe_model_16_retry --start_new_model
 
 #frame level
 
@@ -17,13 +16,13 @@ JOB_NAME=yt8m_train_$(date +%Y%m%d_%H%M%S); gcloud --verbosity=debug ml-engine j
 submit training $JOB_NAME \
 --package-path=youtube-8m --module-name=youtube-8m.train \
 --staging-bucket=$BUCKET_NAME --region=us-east1 \
---config=youtube-8m/cloudml-4gpu.yaml \
+--config=youtube-8m/cloudml-gpu.yaml \
 -- --train_data_pattern='gs://youtube8m-ml-us-east1/1/frame_level/train/train*.tfrecord' \
 --use_second_pattern=True --second_data_pattern='gs://youtube8m-ml-us-east1/1/frame_level/validate/validate*.tfrecord' \
---frame_features=True --model=BiLstmModel --batch_size=64 \
+--frame_features=True --model=Conv3DModel --batch_size=16 \
 --feature_names="rgb, audio" --feature_sizes="1024, 128" \
---base_learning_rate=0.0005 --learning_rate_decay=0.9 \
---train_dir=$BUCKET_NAME/yt8m_train_video_level_bilstm --start_new_model
+--base_learning_rate=0.001 --learning_rate_decay=0.9 \
+--train_dir=$BUCKET_NAME/yt8m_train_video_level_conv3d --start_new_model
 
 
 tensorboard --logdir=tensorboard --logdir=$BUCKET_NAME/yt8m_train_video_level_bilstm --port=8080

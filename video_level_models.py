@@ -43,9 +43,6 @@ class LogisticModel(models.BaseModel):
           model in the 'predictions' key. The dimensions of the tensor are
           batch_size x num_classes."""
 
-        # add anpther fully connnected layer
-        full = slim.fully_connected(model_input, 256)
-
         output = slim.fully_connected(
             full, vocab_size, activation_fn=tf.nn.sigmoid,
             weights_regularizer=slim.l2_regularizer(l2_penalty))

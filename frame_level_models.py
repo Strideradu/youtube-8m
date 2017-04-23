@@ -199,42 +199,42 @@ class DbofModel(models.BaseModel):
 
 class LstmModel(models.BaseModel):
 
-  def create_model(self, model_input, vocab_size, num_frames, **unused_params):
-    """Creates a model which uses a stack of LSTMs to represent the video.
-    Args:
-      model_input: A 'batch_size' x 'max_frames' x 'num_features' matrix of
-                   input features.
-      vocab_size: The number of classes in the dataset.
-      num_frames: A vector of length 'batch' which indicates the number of
-           frames for each video (before padding).
-    Returns:
-      A dictionary with a tensor containing the probability predictions of the
-      model in the 'predictions' key. The dimensions of the tensor are
-      'batch_size' x 'num_classes'.
-    """
-    lstm_size = FLAGS.lstm_cells
-    number_of_layers = FLAGS.lstm_layers
+    def create_model(self, model_input, vocab_size, num_frames, **unused_params):
+        """Creates a model which uses a stack of LSTMs to represent the video.
+        Args:
+          model_input: A 'batch_size' x 'max_frames' x 'num_features' matrix of
+                       input features.
+          vocab_size: The number of classes in the dataset.
+          num_frames: A vector of length 'batch' which indicates the number of
+               frames for each video (before padding).
+        Returns:
+          A dictionary with a tensor containing the probability predictions of the
+          model in the 'predictions' key. The dimensions of the tensor are
+          'batch_size' x 'num_classes'.
+        """
+        lstm_size = FLAGS.lstm_cells
+        number_of_layers = FLAGS.lstm_layers
 
-    stacked_lstm = tf.contrib.rnn.MultiRNNCell(
+        stacked_lstm = tf.contrib.rnn.MultiRNNCell(
             [
                 tf.contrib.rnn.BasicLSTMCell(
                     lstm_size, forget_bias=1.0)
                 for _ in range(number_of_layers)
-                ])
+            ])
 
-    loss = 0.0
+        loss = 0.0
 
-    outputs, state = tf.nn.dynamic_rnn(stacked_lstm, model_input,
-                                       sequence_length=num_frames,
-                                       dtype=tf.float32)
+        outputs, state = tf.nn.dynamic_rnn(stacked_lstm, model_input,
+                                           sequence_length=num_frames,
+                                           dtype=tf.float32)
 
-    aggregated_model = getattr(video_level_models,
-                               FLAGS.video_level_classifier_model)
+        aggregated_model = getattr(video_level_models,
+                                   FLAGS.video_level_classifier_model)
 
-    return aggregated_model().create_model(
-        model_input=state[-1].h,
-        vocab_size=vocab_size,
-        **unused_params)
+        return aggregated_model().create_model(
+            model_input=state[-1].h,
+            vocab_size=vocab_size,
+            **unused_params)
 
 
 class BiLstmModel(models.BaseModel):
@@ -296,3 +296,54 @@ class BiLstmModel(models.BaseModel):
             model_input=state[-1].h,
             vocab_size=vocab_size,
             **unused_params)
+
+
+class Conv3DModel(models.BaseModel):
+
+    def create_model(self, model_input, vocab_size, num_frames, is_training=True, **unused_params):
+        """Creates a model which uses a seqtoseq model to represent the video.
+        Args:
+          model_input: A 'batch_size' x 'max_frames' x 'num_features' matrix of
+                       input features.
+          vocab_size: The number of classes in the dataset.
+          num_frames: A vector of length 'batch' which indicates the number of
+               frames for each video (before padding).
+        Returns:
+          A dictionary with a tensor containing the probability predictions of the
+          model in the 'predictions' key. The dimensions of the tensor are
+          'batch_size' x 'num_classes'.
+        """
+
+        batch_norm_params = {'is_training': is_training,
+                             'decay': 0.9, 'updates_collections': None}
+        with slim.arg_scope([slim.conv2d, slim.fully_connected],
+                            normalizer_fn=slim.batch_norm,
+                            normalizer_params=batch_norm_params):
+            x = tf.expand_dims(model_input, -1)
+
+            # For slim.conv2d, default argument values are like
+            # normalizer_fn = None, normalizer_params = None, <== slim.arg_scope changes these arguments
+            # padding='SAME', activation_fn=nn.relu,
+            # weights_initializer = initializers.xavier_initializer(),
+            # biases_initializer = init_ops.zeros_initializer,
+            net = slim.conv2d(x, 32, [5, 5], scope='conv1')
+            net = slim.max_pool2d(net, [2, 2], scope='pool1')
+            net = slim.conv2d(net, 64, [5, 5], scope='conv2')
+            net = slim.max_pool2d(net, [2, 2], scope='pool2')
+            net = slim.flatten(net, scope='flatten3')
+
+            # For slim.fully_connected, default argument values are like
+            # activation_fn = nn.relu,
+            # normalizer_fn = None, normalizer_params = None, <== slim.arg_scope changes these arguments
+            # weights_initializer = initializers.xavier_initializer(),
+            # biases_initializer = init_ops.zeros_initializer,
+            #net = slim.fully_connected(net, 1024, scope='fc3')
+            # net = slim.dropout(net, is_training=is_training, scope='dropout3')  # 0.5 by default
+            #outputs = slim.fully_connected(net, self.num_classes, activation_fn=None, normalizer_fn=None, scope='fco')
+
+            aggregated_model = getattr(video_level_models,
+                                       FLAGS.video_level_classifier_model)
+            return aggregated_model().create_model(
+                model_input=net,
+                vocab_size=vocab_size,
+                **unused_params)

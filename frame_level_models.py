@@ -20,6 +20,7 @@ import models
 import video_level_models
 import tensorflow as tf
 import model_utils as utils
+import util_conv
 
 import tensorflow.contrib.slim as slim
 from tensorflow import flags
@@ -296,9 +297,6 @@ class BiLstmModel(models.BaseModel):
             model_input=state[-1].h,
             vocab_size=vocab_size,
             **unused_params)
-
-
-import util_conv
 
 
 class Conv3DModel(models.BaseModel):

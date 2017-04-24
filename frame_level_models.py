@@ -298,7 +298,58 @@ class BiLstmModel(models.BaseModel):
             **unused_params)
 
 
+import util_conv
+
+
 class Conv3DModel(models.BaseModel):
+
+    def create_model(self, model_input, vocab_size, num_frames, is_training=True, **unused_params):
+        """Creates a model which uses a seqtoseq model to represent the video.
+        Args:
+          model_input: A 'batch_size' x 'max_frames' x 'num_features' matrix of
+                       input features.
+          vocab_size: The number of classes in the dataset.
+          num_frames: A vector of length 'batch' which indicates the number of
+               frames for each video (before padding).
+        Returns:
+          A dictionary with a tensor containing the probability predictions of the
+          model in the 'predictions' key. The dimensions of the tensor are
+          'batch_size' x 'num_classes'.
+        """
+
+        with tf.variable_scope("con3d"):
+            model_input1 = tf.expand_dims(model_input, -1)
+            conv = {"conv0": model_input1}
+            layers = 6
+            for i in range(layers):
+                conv["conv{}".format(i + 1)] = util_conv.convLayer(conv["conv{}".format(i)],
+                                                                   ((i) * 2) + 2,
+                                                                   size_window=[
+                                                                       2, 2],
+                                                                   keep_prob=None,
+                                                                   maxPool=[
+                                                                       2, 2],
+                                                                   scopeN="l{}".format(i))
+
+            max_frames = conv["conv{}".format(layers)].get_shape().as_list()[1]
+            feature_size = conv["conv{}".format(
+                layers)].get_shape().as_list()[2]
+            out_chanels = conv["conv{}".format(
+                layers)].get_shape().as_list()[3]
+            print(conv["conv{}".format(layers)].get_shape().as_list())
+
+            flaten = tf.reshape(conv["conv{}".format(
+                layers)], [-1, max_frames * feature_size * out_chanels])
+
+            aggregated_model = getattr(video_level_models,
+                                       FLAGS.video_level_classifier_model)
+            return aggregated_model().create_model(
+                model_input=flaten,
+                vocab_size=vocab_size,
+                **unused_params)
+
+
+class Conv3DModelSlim(models.BaseModel):
 
     def create_model(self, model_input, vocab_size, num_frames, is_training=True, **unused_params):
         """Creates a model which uses a seqtoseq model to represent the video.

@@ -18,12 +18,12 @@ submit training $JOB_NAME \
 --staging-bucket=$BUCKET_NAME --region=us-east1 \
 --config=youtube-8m/cloudml-gpu.yaml \
 -- --train_data_pattern='gs://youtube8m-ml-us-east1/1/frame_level/train/train*.tfrecord' \
---use_second_pattern=True --second_data_pattern='gs://youtube8m-ml-us-east1/1/frame_level/validate/validate*.tfrecord' \
 --frame_features=True --model=Conv3DModel --batch_size=16 \
 --feature_names="rgb, audio" --feature_sizes="1024, 128" \
 --base_learning_rate=0.001 --learning_rate_decay=0.9 \
 --train_dir=$BUCKET_NAME/yt8m_train_video_level_conv3d --start_new_model
 
+--use_second_pattern=True --second_data_pattern='gs://youtube8m-ml-us-east1/1/frame_level/validate/validate*.tfrecord' \
 
 tensorboard --logdir=tensorboard --logdir=$BUCKET_NAME/yt8m_train_video_level_bilstm --port=8080
 

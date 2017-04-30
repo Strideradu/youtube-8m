@@ -44,7 +44,7 @@ class LogisticModel(models.BaseModel):
           batch_size x num_classes."""
 
         output = slim.fully_connected(
-            full, vocab_size, activation_fn=tf.nn.sigmoid,
+            model_input, vocab_size, activation_fn=tf.nn.sigmoid,
             weights_regularizer=slim.l2_regularizer(l2_penalty))
         return {"predictions": output}
 

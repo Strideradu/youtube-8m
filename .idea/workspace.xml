@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dfc26ec7-37ab-4309-b73e-ccd6d61342c7" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/frame_level_models.py" afterPath="$PROJECT_DIR$/frame_level_models.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model_utils.py" afterPath="$PROJECT_DIR$/model_utils.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/util_conv.py" afterPath="$PROJECT_DIR$/util_conv.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/train_command.txt" afterPath="$PROJECT_DIR$/train_command.txt" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -45,11 +43,21 @@
       <file leaf-file-name="frame_level_models.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/frame_level_models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="594">
-              <caret line="268" column="52" lean-forward="true" selection-start-line="268" selection-start-column="52" selection-end-line="268" selection-end-column="52" />
+            <state relative-caret-position="744">
+              <caret line="255" column="58" lean-forward="true" selection-start-line="255" selection-start-column="58" selection-end-line="255" selection-end-column="58" />
               <folding>
                 <element signature="e#681#692#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="train_command.txt" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/train_command.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="891">
+              <caret line="33" column="49" lean-forward="true" selection-start-line="33" selection-start-column="49" selection-end-line="33" selection-end-column="49" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -122,6 +130,7 @@
         <option value="$PROJECT_DIR$/classification.py" />
         <option value="$PROJECT_DIR$/util_conv.py" />
         <option value="$PROJECT_DIR$/model_utils.py" />
+        <option value="$PROJECT_DIR$/train_command.txt" />
         <option value="$PROJECT_DIR$/frame_level_models.py" />
       </list>
     </option>
@@ -583,10 +592,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/train_command.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="891">
+          <caret line="33" column="49" lean-forward="true" selection-start-line="33" selection-start-column="49" selection-end-line="33" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/frame_level_models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="594">
-          <caret line="268" column="52" lean-forward="true" selection-start-line="268" selection-start-column="52" selection-end-line="268" selection-end-column="52" />
+        <state relative-caret-position="744">
+          <caret line="255" column="58" lean-forward="true" selection-start-line="255" selection-start-column="58" selection-end-line="255" selection-end-column="58" />
           <folding>
             <element signature="e#681#692#0" expanded="true" />
           </folding>

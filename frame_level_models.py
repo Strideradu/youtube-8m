@@ -251,6 +251,7 @@ class TemporalPoolingCNNModel(models.BaseModel):
           'batch_size' x 'num_classes'.
         """
         max_frame = 128
+        num_frames = tf.cast(tf.expand_dims(num_frames, 1), tf.float32)
         model_input = utils.SampleRandomFrames(model_input, num_frames, max_frame)
         # max_frame = model_input.get_shape().as_list()[1]
         image = tf.reshape(model_input, [-1, 32, 32])

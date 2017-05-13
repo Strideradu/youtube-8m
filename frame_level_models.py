@@ -50,7 +50,6 @@ flags.DEFINE_integer("lstm_layers", 2, "Number of LSTM layers.")
 
 
 class FrameLevelLogisticModel(models.BaseModel):
-
     def create_model(self, model_input, vocab_size, num_frames, **unused_params):
         """Creates a model which uses a logistic classifier over the average of the
         frame-level features.
@@ -199,7 +198,6 @@ class DbofModel(models.BaseModel):
 
 
 class LstmModel(models.BaseModel):
-
     def create_model(self, model_input, vocab_size, num_frames, **unused_params):
         """Creates a model which uses a stack of LSTMs to represent the video.
         Args:
@@ -221,7 +219,7 @@ class LstmModel(models.BaseModel):
                 tf.contrib.rnn.BasicLSTMCell(
                     lstm_size, forget_bias=1.0)
                 for _ in range(number_of_layers)
-            ])
+                ])
 
         loss = 0.0
 
@@ -234,6 +232,54 @@ class LstmModel(models.BaseModel):
 
         return aggregated_model().create_model(
             model_input=state[-1].h,
+            vocab_size=vocab_size,
+            **unused_params)
+
+
+class TemporalPoolingCNNModel(models.BaseModel):
+    def create_model(self, model_input, vocab_size, num_frames, **unused_params):
+        """Creates a model which uses a stack of LSTMs to represent the video.
+        Args:
+          model_input: A 'batch_size' x 'max_frames' x 'num_features' matrix of
+                       input features.
+          vocab_size: The number of classes in the dataset.
+          num_frames: A vector of length 'batch' which indicates the number of
+               frames for each video (before padding).
+        Returns:
+          A dictionary with a tensor containing the probability predictions of the
+          model in the 'predictions' key. The dimensions of the tensor are
+          'batch_size' x 'num_classes'.
+        """
+        max_frame = 128
+        model_input = utils.SampleRandomFrames(model_input, num_frames, max_frame)
+        # max_frame = model_input.get_shape().as_list()[1]
+        image = tf.reshape(model_input, [-1, 32, 32])
+        image = tf.expand_dims(image, 3)
+        with slim.arg_scope([slim.conv2d],
+                            weights_initializer=tf.truncated_normal_initializer(stddev=0.01),
+                            weights_regularizer=slim.l2_regularizer(0.0005),
+                            normalizer_fn=slim.batch_norm):
+            net = slim.conv2d(image, 32, [5, 5], padding='VALID', scope='conv1')
+            net = slim.relu(net, 32, scope='relu1')
+            net = slim.max_pool2d(net, [2, 2], scope='pool1')
+            net = slim.conv2d(net, 64, [5, 5], padding='VALID', scope='conv2')
+            net = slim.relu(net, 64, scope='relu2')
+            net = slim.max_pool2d(net, [2, 2], scope='pool2')
+            net = slim.conv2d(net, 128, [5, 5], padding='VALID', scope='conv3')
+            net = slim.relu(net, 128, scope='relu3')
+            net = tf.squeeze(net, [1, 2], name='squeezed')
+            print(net)
+
+        net = tf.reshape(net, [-1, max_frame, 128])
+        net = utils.FramePooling(net, 'max')
+        net = slim.fully_connected(net, 512, scope='fc4')
+        print(net)
+
+        aggregated_model = getattr(video_level_models,
+                                   FLAGS.video_level_classifier_model)
+
+        return aggregated_model().create_model(
+            model_input=net,
             vocab_size=vocab_size,
             **unused_params)
 
@@ -263,18 +309,18 @@ class BiLstmModel(models.BaseModel):
                 tf.contrib.rnn.BasicLSTMCell(
                     lstm_size, forget_bias=1.0, state_is_tuple=False)
                 for _ in range(number_of_layers)
-            ], state_is_tuple=False)
+                ], state_is_tuple=False)
 
         stacked_lstm_bw = tf.contrib.rnn.MultiRNNCell(
             [
                 tf.contrib.rnn.BasicLSTMCell(
                     lstm_size, forget_bias=1.0)
                 for _ in range(number_of_layers)
-            ], state_is_tuple=False)
+                ], state_is_tuple=False)
 
-        #lstm_fw = tf.contrib.rnn.BasicLSTMCell(lstm_size, forget_bias=1.0, state_is_tuple=False)
+        # lstm_fw = tf.contrib.rnn.BasicLSTMCell(lstm_size, forget_bias=1.0, state_is_tuple=False)
 
-        #lstm_bw = tf.contrib.rnn.BasicLSTMCell(lstm_size, forget_bias=1.0, state_is_tuple=False)
+        # lstm_bw = tf.contrib.rnn.BasicLSTMCell(lstm_size, forget_bias=1.0, state_is_tuple=False)
 
         loss = 0.0
 

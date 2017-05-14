@@ -222,8 +222,8 @@ class LstmModel(models.BaseModel):
 
         stacked_lstm = tf.contrib.rnn.MultiRNNCell(
             [
-                tf.contrib.rnn.BasicLSTMCell(
-                    lstm_size, forget_bias=1.0)
+                tf.contrib.rnn.DropoutWrapper(tf.contrib.rnn.BasicLSTMCell(lstm_size, forget_bias=1.0),
+                                              input_keep_prob=0.5, output_keep_prob=0.5)
                 for _ in range(number_of_layers)
                 ])
 

@@ -219,6 +219,7 @@ class LstmModel(models.BaseModel):
         num_frames = tf.cast(tf.expand_dims(num_frames, 1), tf.float32)
         model_input = utils.SampleRandomSequence(model_input, num_frames,
                                                  iterations)
+        max_frames = model_input.get_shape().as_list()[1]
 
         stacked_lstm = tf.contrib.rnn.MultiRNNCell(
             [
@@ -230,7 +231,7 @@ class LstmModel(models.BaseModel):
         loss = 0.0
 
         outputs, state = tf.nn.dynamic_rnn(stacked_lstm, model_input,
-                                           sequence_length=iterations,
+                                           sequence_length=max_frames,
                                            dtype=tf.float32)
 
         aggregated_model = getattr(video_level_models,

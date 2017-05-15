@@ -219,7 +219,7 @@ class LstmModel(models.BaseModel):
         num_frames = tf.cast(tf.expand_dims(num_frames, 1), tf.float32)
         model_input = utils.SampleRandomSequence(model_input, num_frames,
                                                  iterations)
-        batch_size = model_input.get_shape().as_list()[0]
+        batch_size = tf.shape(model_input)[0]
         num_frames = tf.fill([batch_size], iterations)
 
         stacked_lstm = tf.contrib.rnn.MultiRNNCell(

@@ -21,6 +21,7 @@ import video_level_models
 import tensorflow as tf
 import model_utils as utils
 import util_conv
+import grid_rnn_cell as grid
 
 import tensorflow.contrib.slim as slim
 from tensorflow import flags
@@ -52,6 +53,7 @@ flags.DEFINE_bool("grid_weights_tied", False, "Tie the time and depth weights fo
 flags.DEFINE_string("weight_initializer", "uniform_unit_scaling_initializer",
                     "Weight initializing method, only in use now for the LSTM")
 flags.DEFINE_integer("attention_length", 8, "Size of attention window.")
+flags.DEFINE_integer("num_shifts", 512, "number of shift.")
 
 
 class FrameLevelLogisticModel(models.BaseModel):
@@ -374,11 +376,12 @@ class GridLstmModel(models.BaseModel):
         """
         lstm_size = FLAGS.lstm_cells
         number_of_layers = FLAGS.lstm_layers
+        num_shifts = FLAGS.num_shifts
 
         stacked_grid_lstm = tf.contrib.rnn.MultiRNNCell(
             [
                 tf.contrib.rnn.GridLSTMCell(
-                    lstm_size, forget_bias=1.0, use_peepholes=True, state_is_tuple=False)
+                    lstm_size, forget_bias=1.0, use_peepholes=True, state_is_tuple=False, num_frequency_blocks = [num_shifts])
                 for _ in range(number_of_layers)], state_is_tuple=False)
 
         loss = 0.0
@@ -482,6 +485,44 @@ class TFLstmModel(models.BaseModel):
         loss = 0.0
 
         outputs, state = tf.nn.dynamic_rnn(stacked_lstm, model_input,
+                                           sequence_length=num_frames,
+                                           dtype=tf.float32)
+
+        aggregated_model = getattr(video_level_models,
+                                   FLAGS.video_level_classifier_model)
+
+        return aggregated_model().create_model(
+            model_input=state,
+            vocab_size=vocab_size,
+            **unused_params)
+
+
+class Grid2LstmModel(models.BaseModel):
+    def create_model(self, model_input, vocab_size, num_frames, **unused_params):
+        """Creates a model which uses a stack of grid-LSTM Units to represent the video.
+        Args:
+          model_input: A 'batch_size' x 'max_frames' x 'num_features' matrix of
+                       input features.
+          vocab_size: The number of classes in the dataset.
+          num_frames: A vector of length 'batch' which indicates the number of
+               frames for each video (before padding).
+        Returns:
+          A dictionary with a tensor containing the probability predictions of the
+          model in the 'predictions' key. The dimensions of the tensor are
+          'batch_size' x 'num_classes'.
+        """
+        lstm_size = FLAGS.lstm_cells
+        number_of_layers = FLAGS.lstm_layers
+
+        stacked_grid_lstm = tf.contrib.rnn.MultiRNNCell(
+            [
+                grid.Grid2LSTMCell(
+                    lstm_size, forget_bias=1.0, use_peepholes=True, tied=FLAGS.grid_weights_tied, state_is_tuple=False,
+                    output_is_tuple=False)
+                for _ in range(number_of_layers)], state_is_tuple=False)
+
+        loss = 0.0
+        outputs, state = tf.nn.dynamic_rnn(stacked_grid_lstm, model_input,
                                            sequence_length=num_frames,
                                            dtype=tf.float32)
 

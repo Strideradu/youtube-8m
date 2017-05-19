@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="dfc26ec7-37ab-4309-b73e-ccd6d61342c7" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grid_rnn_cell.py" afterPath="$PROJECT_DIR$/grid_rnn_cell.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/utils.py" afterPath="$PROJECT_DIR$/utils.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -31,7 +31,7 @@
       <file leaf-file-name="readers.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/readers.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2970">
+            <state relative-caret-position="3051">
               <caret line="113" column="46" lean-forward="false" selection-start-line="113" selection-start-column="46" selection-end-line="113" selection-end-column="46" />
               <folding>
                 <element signature="e#657#680#0" expanded="true" />
@@ -43,7 +43,7 @@
       <file leaf-file-name="frame_level_models.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/frame_level_models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="59">
+            <state relative-caret-position="13473">
               <caret line="499" column="11" lean-forward="false" selection-start-line="499" selection-start-column="11" selection-end-line="499" selection-end-column="11" />
               <folding>
                 <element signature="e#681#692#0" expanded="true" />
@@ -52,7 +52,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="grid_rnn_cell.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="grid_rnn_cell.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/grid_rnn_cell.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="420">
@@ -87,19 +87,23 @@
       <file leaf-file-name="train.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/train.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1863">
-              <caret line="86" column="62" lean-forward="false" selection-start-line="86" selection-start-column="55" selection-end-line="86" selection-end-column="62" />
-              <folding />
+            <state relative-caret-position="370">
+              <caret line="15" column="0" lean-forward="true" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+              <folding>
+                <element signature="e#669#680#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="utils.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="utils.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1161">
-              <caret line="45" column="35" lean-forward="false" selection-start-line="45" selection-start-column="35" selection-end-line="45" selection-end-column="35" />
-              <folding />
+            <state relative-caret-position="545">
+              <caret line="191" column="9" lean-forward="true" selection-start-line="191" selection-start-column="9" selection-end-line="191" selection-end-column="9" />
+              <folding>
+                <element signature="e#675#687#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -142,13 +146,13 @@
       <list>
         <option value="$PROJECT_DIR$/video_level_models.py" />
         <option value="$PROJECT_DIR$/readers.py" />
-        <option value="$PROJECT_DIR$/utils.py" />
         <option value="$PROJECT_DIR$/classification.py" />
         <option value="$PROJECT_DIR$/util_conv.py" />
         <option value="$PROJECT_DIR$/model_utils.py" />
         <option value="$PROJECT_DIR$/train_command.txt" />
         <option value="$PROJECT_DIR$/frame_level_models.py" />
         <option value="$PROJECT_DIR$/grid_rnn_cell.py" />
+        <option value="$PROJECT_DIR$/utils.py" />
       </list>
     </option>
   </component>
@@ -380,7 +384,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1863">
           <caret line="86" column="62" lean-forward="false" selection-start-line="86" selection-start-column="55" selection-end-line="86" selection-end-column="62" />
-          <folding />
+          <folding>
+            <element signature="e#669#680#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -388,7 +394,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1161">
           <caret line="45" column="35" lean-forward="false" selection-start-line="45" selection-start-column="35" selection-end-line="45" selection-end-column="35" />
-          <folding />
+          <folding>
+            <element signature="e#675#687#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -450,7 +458,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1647">
           <caret line="78" column="31" lean-forward="false" selection-start-line="78" selection-start-column="9" selection-end-line="78" selection-end-column="31" />
-          <folding />
+          <folding>
+            <element signature="e#669#680#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -458,7 +468,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1161">
           <caret line="45" column="35" lean-forward="false" selection-start-line="45" selection-start-column="35" selection-end-line="45" selection-end-column="35" />
-          <folding />
+          <folding>
+            <element signature="e#675#687#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -520,7 +532,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3753">
           <caret line="139" column="33" lean-forward="true" selection-start-line="139" selection-start-column="27" selection-end-line="139" selection-end-column="33" />
-          <folding />
+          <folding>
+            <element signature="e#669#680#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -528,7 +542,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1161">
           <caret line="45" column="35" lean-forward="false" selection-start-line="45" selection-start-column="35" selection-end-line="45" selection-end-column="35" />
-          <folding />
+          <folding>
+            <element signature="e#675#687#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -574,7 +590,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3294">
           <caret line="139" column="33" lean-forward="true" selection-start-line="139" selection-start-column="27" selection-end-line="139" selection-end-column="33" />
-          <folding />
+          <folding>
+            <element signature="e#669#680#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -583,7 +601,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1161">
           <caret line="45" column="35" lean-forward="false" selection-start-line="45" selection-start-column="35" selection-end-line="45" selection-end-column="35" />
-          <folding />
+          <folding>
+            <element signature="e#675#687#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -619,7 +639,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3294">
           <caret line="139" column="33" lean-forward="true" selection-start-line="139" selection-start-column="27" selection-end-line="139" selection-end-column="33" />
-          <folding />
+          <folding>
+            <element signature="e#669#680#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -627,7 +649,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1161">
           <caret line="45" column="35" lean-forward="false" selection-start-line="45" selection-start-column="35" selection-end-line="45" selection-end-column="35" />
-          <folding />
+          <folding>
+            <element signature="e#675#687#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -650,7 +674,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#669#680#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -673,7 +699,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#669#680#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -696,7 +724,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="e#669#680#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -727,36 +757,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1161">
-          <caret line="45" column="35" lean-forward="false" selection-start-line="45" selection-start-column="35" selection-end-line="45" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/readers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2970">
-          <caret line="113" column="46" lean-forward="false" selection-start-line="113" selection-start-column="46" selection-end-line="113" selection-end-column="46" />
-          <folding>
-            <element signature="e#657#680#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/model_utils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="837">
           <caret line="35" column="6" lean-forward="false" selection-start-line="35" selection-start-column="4" selection-end-line="35" selection-end-column="41" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/train.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1863">
-          <caret line="86" column="62" lean-forward="false" selection-start-line="86" selection-start-column="55" selection-end-line="86" selection-end-column="62" />
           <folding />
         </state>
       </provider>
@@ -769,9 +773,19 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/grid_rnn_cell.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="420">
+          <caret line="385" column="16" lean-forward="true" selection-start-line="385" selection-start-column="16" selection-end-line="385" selection-end-column="16" />
+          <folding>
+            <element signature="e#734#772#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/frame_level_models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="59">
+        <state relative-caret-position="13473">
           <caret line="499" column="11" lean-forward="false" selection-start-line="499" selection-start-column="11" selection-end-line="499" selection-end-column="11" />
           <folding>
             <element signature="e#681#692#0" expanded="true" />
@@ -779,12 +793,32 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/grid_rnn_cell.py">
+    <entry file="file://$PROJECT_DIR$/train.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="385" column="16" lean-forward="true" selection-start-line="385" selection-start-column="16" selection-end-line="385" selection-end-column="16" />
+        <state relative-caret-position="370">
+          <caret line="15" column="0" lean-forward="true" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
           <folding>
-            <element signature="e#734#772#0" expanded="true" />
+            <element signature="e#669#680#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/readers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3051">
+          <caret line="113" column="46" lean-forward="false" selection-start-line="113" selection-start-column="46" selection-end-line="113" selection-end-column="46" />
+          <folding>
+            <element signature="e#657#680#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="545">
+          <caret line="191" column="9" lean-forward="true" selection-start-line="191" selection-start-column="9" selection-end-line="191" selection-end-column="9" />
+          <folding>
+            <element signature="e#675#687#0" expanded="true" />
           </folding>
         </state>
       </provider>

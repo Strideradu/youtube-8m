@@ -18,6 +18,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import tensorflow as tf
+
 from collections import namedtuple
 import functools
 
@@ -398,7 +400,7 @@ class Grid2LSTMCell(GridRNNCell):
             non_recurrent_dims=None if non_recurrent_fn is None else 0,
             cell_fn=lambda n: rnn.LSTMCell(
                 num_units=n, forget_bias=forget_bias,
-                use_peepholes=use_peepholes),
+                use_peepholes=use_peepholes, reuse=tf.get_variable_scope().reuse),
             non_recurrent_fn=non_recurrent_fn,
             state_is_tuple=state_is_tuple, output_is_tuple=output_is_tuple)
 

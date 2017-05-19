@@ -230,8 +230,9 @@ class LstmModel(models.BaseModel):
 
         stacked_lstm = tf.contrib.rnn.MultiRNNCell(
             [
-                tf.contrib.rnn.DropoutWrapper(tf.contrib.rnn.BasicLSTMCell(lstm_size, forget_bias=1.0, reuse=True),
-                                              input_keep_prob=0.5, output_keep_prob=0.5)
+                tf.contrib.rnn.DropoutWrapper(
+                    tf.contrib.rnn.BasicLSTMCell(lstm_size, forget_bias=1.0, reuse=tf.get_variable_scope().reuse),
+                    input_keep_prob=0.5, output_keep_prob=0.5)
                 for _ in range(number_of_layers)
                 ])
 
@@ -381,7 +382,8 @@ class GridLstmModel(models.BaseModel):
         stacked_grid_lstm = tf.contrib.rnn.MultiRNNCell(
             [
                 tf.contrib.rnn.GridLSTMCell(
-                    lstm_size, forget_bias=1.0, use_peepholes=True, state_is_tuple=False, num_frequency_blocks = [num_shifts])
+                    lstm_size, forget_bias=1.0, use_peepholes=True, state_is_tuple=False,
+                    num_frequency_blocks=[num_shifts])
                 for _ in range(number_of_layers)], state_is_tuple=False)
 
         loss = 0.0
@@ -422,14 +424,14 @@ class AttentionLstmModel(models.BaseModel):
                 [
                     tf.contrib.rnn.AttentionCellWrapper(tf.contrib.rnn.LSTMCell(
                         lstm_size, forget_bias=1.0, state_is_tuple=False,
-                        initializer=tf.truncated_normal_initializer(stddev=1e-3)), attn_length = attention_length)
+                        initializer=tf.truncated_normal_initializer(stddev=1e-3)), attn_length=attention_length)
                     for _ in range(number_of_layers)
                     ], state_is_tuple=False)
         else:  # uniform weight initializations by default, for some reason
             stacked_lstm = tf.contrib.rnn.MultiRNNCell(
                 [
                     tf.contrib.rnn.AttentionCellWrapper(tf.contrib.rnn.LSTMCell(
-                        lstm_size, forget_bias=1.0, state_is_tuple=False), attn_length = attention_length)
+                        lstm_size, forget_bias=1.0, state_is_tuple=False), attn_length=attention_length)
                     for _ in range(number_of_layers)
                     ], state_is_tuple=False)
 

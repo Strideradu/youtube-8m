@@ -20,15 +20,15 @@ submit training $JOB_NAME \
 -- --train_data_pattern='gs://youtube8m-ml-us-east1/1/frame_level/train/train*.tfrecord' \
 --frame_features=True --model=LstmModel --batch_size=64 \
 --feature_names="rgb, audio" --feature_sizes="1024, 128" \
---base_learning_rate=0.001 --learning_rate_decay=0.9 \
---regularization_penalty=0.5 \
+--base_learning_rate=0.0005 --learning_rate_decay=0.9 \
+--regularization_penalty=0.5 --learning_rate_decay_examples=1000000 \
 --train_dir=$BUCKET_NAME/yt8m_train_frame_level_LSTM_random_seq --start_new_model
 
 --use_second_pattern=True --second_data_pattern='gs://youtube8m-ml-us-east1/1/frame_level/validate/validate*.tfrecord' \
 
-tensorboard --logdir=tensorboard --logdir=$BUCKET_NAME/yt8m_train_video_level_temporalCNN --port=8080
+tensorboard --logdir=tensorboard --logdir=$BUCKET_NAME/yt8m_train_frame_level_LSTM_random_seq --port=8080
 
-JOB_TO_EVAL=yt8m_train_video_level_bilstm
+JOB_TO_EVAL=yt8m_train_frame_level_LSTM_random_seq
 JOB_NAME=yt8m_inference_$(date +%Y%m%d_%H%M%S); gcloud --verbosity=debug ml-engine jobs \
 submit training $JOB_NAME \
 --package-path=youtube-8m --module-name=youtube-8m.inference \
@@ -36,8 +36,8 @@ submit training $JOB_NAME \
 --config=youtube-8m/cloudml-gpu.yaml \
 -- --input_data_pattern='gs://youtube8m-ml/1/frame_level/test/test*.tfrecord' \
 --train_dir=$BUCKET_NAME/${JOB_TO_EVAL} \
---frame_features=True --feature_names="rgb, audio" --feature_sizes="1024, 128" --batch_size=256 \
---output_file=$BUCKET_NAME/${JOB_TO_EVAL}/predictions_bilstm.csv
+--frame_features=True --feature_names="rgb, audio" --feature_sizes="1024, 128" --batch_size=64 \
+--output_file=$BUCKET_NAME/${JOB_TO_EVAL}/predictions_lstm_randon_1.csv
 
-gsutil cp --output_file=$BUCKET_NAME/${JOB_TO_EVAL}/predictions_eval_final.csv .
+gsutil cp $BUCKET_NAME/${JOB_TO_EVAL}/predictions_lstm_randon_1.csv .
 

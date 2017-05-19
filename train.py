@@ -638,7 +638,7 @@ class Trainer(object):
                     batch_size=FLAGS.batch_size,
                     num_epochs=FLAGS.num_epochs, second_pattern=FLAGS.use_second_pattern)
 
-        return tf.train.Saver(max_to_keep=0, keep_checkpoint_every_n_hours=1.0)
+        return tf.train.Saver(max_to_keep=10, keep_checkpoint_every_n_hours=2.0)
 
 
 def get_reader():

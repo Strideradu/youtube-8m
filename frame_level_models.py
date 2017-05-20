@@ -433,7 +433,7 @@ class AttentionLstmModel(models.BaseModel):
                 [
                     tf.contrib.rnn.AttentionCellWrapper(
                         tf.contrib.rnn.LSTMCell(lstm_size, forget_bias=1.0, state_is_tuple=False),
-                        attn_length=attention_length)
+                        attn_length=attention_length, reuse=tf.get_variable_scope().reuse)
                     for _ in range(number_of_layers)
                     ], state_is_tuple=False)
 

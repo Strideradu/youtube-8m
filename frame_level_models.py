@@ -422,16 +422,18 @@ class AttentionLstmModel(models.BaseModel):
         if weight_initializer == 'random':
             stacked_lstm = tf.contrib.rnn.MultiRNNCell(
                 [
-                    tf.contrib.rnn.AttentionCellWrapper(tf.contrib.rnn.LSTMCell(
-                        lstm_size, forget_bias=1.0, state_is_tuple=False,
-                        initializer=tf.truncated_normal_initializer(stddev=1e-3)), attn_length=attention_length)
+                    tf.contrib.rnn.AttentionCellWrapper(
+                        tf.contrib.rnn.LSTMCell(lstm_size, forget_bias=1.0, state_is_tuple=False,
+                                                initializer=tf.truncated_normal_initializer(stddev=1e-3),
+                                                reuse=tf.get_variable_scope().reuse), attn_length=attention_length)
                     for _ in range(number_of_layers)
                     ], state_is_tuple=False)
         else:  # uniform weight initializations by default, for some reason
             stacked_lstm = tf.contrib.rnn.MultiRNNCell(
                 [
-                    tf.contrib.rnn.AttentionCellWrapper(tf.contrib.rnn.LSTMCell(
-                        lstm_size, forget_bias=1.0, state_is_tuple=False), attn_length=attention_length)
+                    tf.contrib.rnn.AttentionCellWrapper(
+                        tf.contrib.rnn.LSTMCell(lstm_size, forget_bias=1.0, state_is_tuple=False,
+                                                reuse=tf.get_variable_scope().reuse), attn_length=attention_length)
                     for _ in range(number_of_layers)
                     ], state_is_tuple=False)
 

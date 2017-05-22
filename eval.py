@@ -71,7 +71,6 @@ if __name__ == "__main__":
 def find_class_by_name(name, modules):
     """Searches the provided modules for the named class and returns it."""
     modules = [getattr(module, name, None) for module in modules]
-    print modules
     return next(a for a in modules if a)
 
 
@@ -286,7 +285,6 @@ def evaluate():
             reader = readers.YT8MAggregatedFeatureReader(feature_names=feature_names,
                                                          feature_sizes=feature_sizes)
 
-        print([frame_level_models, video_level_models])
         model = find_class_by_name(FLAGS.model,
                                    [frame_level_models, video_level_models])()
         label_loss_fn = find_class_by_name(FLAGS.label_loss, [losses])()

@@ -588,7 +588,7 @@ class PeeholeLstmModel(models.BaseModel):
             vocab_size=vocab_size,
             **unused_params)
 
-class BlockLstmModel(models.BaseModel):
+class LayerNormLstmModel(models.BaseModel):
     def create_model(self, model_input, vocab_size, num_frames, **unused_params):
         """Creates a model which uses a stack of LSTMs to represent the video.
         Args:
@@ -604,13 +604,13 @@ class BlockLstmModel(models.BaseModel):
         """
         lstm_size = FLAGS.lstm_cells
         number_of_layers = FLAGS.lstm_layers
-        weight_initializer = FLAGS.weight_initializer
 
         stacked_lstm = tf.contrib.rnn.MultiRNNCell(
             [
-                tf.contrib.rnn.LSTMBlockCell(lstm_size, forget_bias=1.0)
+                tf.contrib.rnn.LayerNormBasicLSTMCell(lstm_size, forget_bias=1.0, dropout_keep_prob=0.5,
+                                        reuse=tf.get_variable_scope().reuse)
                 for _ in range(number_of_layers)
-                ], state_is_tuple=False)
+                ])
 
         loss = 0.0
 
@@ -625,3 +625,5 @@ class BlockLstmModel(models.BaseModel):
             model_input=state,
             vocab_size=vocab_size,
             **unused_params)
+
+

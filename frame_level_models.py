@@ -558,7 +558,6 @@ class PeeholeLstmModel(models.BaseModel):
         lstm_size = FLAGS.lstm_cells
         number_of_layers = FLAGS.lstm_layers
         weight_initializer = FLAGS.weight_initializer
-        attention_length = FLAGS.attention_length
 
         if weight_initializer == 'random':
             stacked_lstm = tf.contrib.rnn.MultiRNNCell(
@@ -606,22 +605,12 @@ class BlockLstmModel(models.BaseModel):
         lstm_size = FLAGS.lstm_cells
         number_of_layers = FLAGS.lstm_layers
         weight_initializer = FLAGS.weight_initializer
-        attention_length = FLAGS.attention_length
 
-        if weight_initializer == 'random':
-            stacked_lstm = tf.contrib.rnn.MultiRNNCell(
-                [   tf.contrib.rnn.LSTMBlockCell(lstm_size, forget_bias=1.0, state_is_tuple=False,
-                                            initializer=tf.truncated_normal_initializer(stddev=1e-3),
-                                            reuse=tf.get_variable_scope().reuse)
-                    for _ in range(number_of_layers)
-                    ], state_is_tuple=False)
-        else:  # uniform weight initializations by default, for some reason
-            stacked_lstm = tf.contrib.rnn.MultiRNNCell(
-                [
-                    tf.contrib.rnn.LSTMBlockCell(lstm_size, forget_bias=1.0, state_is_tuple=False,
-                                            reuse=tf.get_variable_scope().reuse)
-                    for _ in range(number_of_layers)
-                    ], state_is_tuple=False)
+        stacked_lstm = tf.contrib.rnn.MultiRNNCell(
+            [
+                tf.contrib.rnn.LSTMBlockCell(lstm_size, forget_bias=1.0)
+                for _ in range(number_of_layers)
+                ], state_is_tuple=False)
 
         loss = 0.0
 

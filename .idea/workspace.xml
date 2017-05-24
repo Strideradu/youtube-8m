@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dfc26ec7-37ab-4309-b73e-ccd6d61342c7" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/frame_level_models.py" afterPath="$PROJECT_DIR$/frame_level_models.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -33,8 +32,8 @@
       <file leaf-file-name="frame_level_models.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/frame_level_models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="653">
-              <caret line="607" column="53" lean-forward="false" selection-start-line="607" selection-start-column="35" selection-end-line="607" selection-end-column="53" />
+            <state relative-caret-position="788">
+              <caret line="617" column="70" lean-forward="true" selection-start-line="617" selection-start-column="70" selection-end-line="617" selection-end-column="70" />
               <folding>
                 <element signature="e#681#692#0" expanded="true" />
               </folding>
@@ -97,7 +96,7 @@
       <file leaf-file-name="train.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/train.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="16335">
+            <state relative-caret-position="14966">
               <caret line="622" column="68" lean-forward="false" selection-start-line="622" selection-start-column="68" selection-end-line="622" selection-end-column="68" />
               <folding>
                 <element signature="e#669#680#0" expanded="true" />
@@ -365,7 +364,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-11" y="-11" width="2182" height="1402" extended-state="7" />
+    <frame x="-11" y="-11" width="2182" height="1402" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24165492" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -784,24 +783,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/train_command.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="756">
-          <caret line="28" column="42" lean-forward="false" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="42" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/train.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="16335">
-          <caret line="622" column="68" lean-forward="false" selection-start-line="622" selection-start-column="68" selection-end-line="622" selection-end-column="68" />
-          <folding>
-            <element signature="e#669#680#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/inference.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1431">
@@ -818,10 +799,28 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/train_command.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="756">
+          <caret line="28" column="42" lean-forward="false" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/train.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="14966">
+          <caret line="622" column="68" lean-forward="false" selection-start-line="622" selection-start-column="68" selection-end-line="622" selection-end-column="68" />
+          <folding>
+            <element signature="e#669#680#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/frame_level_models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="653">
-          <caret line="607" column="53" lean-forward="false" selection-start-line="607" selection-start-column="35" selection-end-line="607" selection-end-column="53" />
+        <state relative-caret-position="788">
+          <caret line="617" column="70" lean-forward="true" selection-start-line="617" selection-start-column="70" selection-end-line="617" selection-end-column="70" />
           <folding>
             <element signature="e#681#692#0" expanded="true" />
           </folding>

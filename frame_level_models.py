@@ -449,7 +449,7 @@ class AttentionLstmModel(models.BaseModel):
                                    FLAGS.video_level_classifier_model)
 
         return aggregated_model().create_model(
-            model_input=state,
+            model_input=state[-1].h,
             vocab_size=vocab_size,
             **unused_params)
 
@@ -498,7 +498,7 @@ class TFLstmModel(models.BaseModel):
                                    FLAGS.video_level_classifier_model)
 
         return aggregated_model().create_model(
-            model_input=state,
+            model_input=state[-1].h,
             vocab_size=vocab_size,
             **unused_params)
 
@@ -622,7 +622,7 @@ class LayerNormLstmModel(models.BaseModel):
                                    FLAGS.video_level_classifier_model)
 
         return aggregated_model().create_model(
-            model_input=state,
+            model_input=state[-1].h,
             vocab_size=vocab_size,
             **unused_params)
 

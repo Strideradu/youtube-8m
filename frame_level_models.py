@@ -588,12 +588,12 @@ class BiLstmModel(models.BaseModel):
 
         forward_stacked_lstm = tf.contrib.rnn.MultiRNNCell(
             [tf.contrib.rnn.BasicLSTMCell(
-                lstm_size, forget_bias=1.0)
+                lstm_size, forget_bias=1.0, reuse=tf.get_variable_scope().reuse)
              for _ in range(number_of_layers)
              ])
         backward_stacked_lstm = tf.contrib.rnn.MultiRNNCell(
             [tf.contrib.rnn.BasicLSTMCell(
-                lstm_size, forget_bias=1.0)
+                lstm_size, forget_bias=1.0, reuse=tf.get_variable_scope().reuse)
              for _ in range(number_of_layers)
              ])
 

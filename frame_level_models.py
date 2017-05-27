@@ -605,19 +605,126 @@ class BiLstmModel(models.BaseModel):
                                                          dtype=tf.float32)
 
         combined_state = tf.add(state[0][-1].h, state[-1][-1].h)
+		
+		"""
         bi_weights = tf.get_variable("bi_weights", [1024, 512],
                                      initializer=tf.random_normal_initializer(stddev=0.1))
         bi_bias = tf.get_variable("bi_bias", [512],
                                   initializer=tf.random_normal_initializer(stddev=0.1))
         softmax = tf.nn.softmax(tf.matmul(combined_state, bi_weights) + bi_bias)
-
+		"""
         # combined_state = tf.Print(combined_state, [tf.shape(combined_state)], 'combined=', summarize=10)
 
         aggregated_model = getattr(video_level_models, FLAGS.video_level_classifier_model)
 
         return aggregated_model().create_model(
-            model_input=softmax,
+            model_input=combined_state,
             vocab_size=vocab_size,
             **unused_params)
 
+class BiLstmModel(models.BaseModel):
+    def create_model(self, model_input, vocab_size, num_frames, **unused_params):
+        """Creates a model which uses a stack of LSTMs to represent the video.
+        Args:
+          model_input: A 'batch_size' x 'max_frames' x 'num_features' matrix of
+                       input features.
+          vocab_size: The number of classes in the dataset.
+          num_frames: A vector of length 'batch' which indicates the number of
+               frames for each video (before padding).
+        Returns:
+          A dictionary with a tensor containing the probability predictions of the
+          model in the 'predictions' key. The dimensions of the tensor are
+          'batch_size' x 'num_classes'.
+        """
 
+        lstm_size = FLAGS.lstm_cells
+        number_of_layers = FLAGS.lstm_layers
+
+        stacked_lstm_fw = tf.contrib.rnn.MultiRNNCell(
+            [
+                tf.contrib.rnn.BasicLSTMCell(
+                    lstm_size, forget_bias=1.0, state_is_tuple=False, reuse=tf.get_variable_scope().reuse)
+                for _ in range(number_of_layers)
+                ], state_is_tuple=False)
+
+        stacked_lstm_bw = tf.contrib.rnn.MultiRNNCell(
+            [
+                tf.contrib.rnn.BasicLSTMCell(
+                    lstm_size, forget_bias=1.0, state_is_tuple=False, reuse=tf.get_variable_scope().reuse)
+                for _ in range(number_of_layers)
+                ], state_is_tuple=False)
+
+        # lstm_fw = tf.contrib.rnn.BasicLSTMCell(lstm_size, forget_bias=1.0, state_is_tuple=False)
+
+        # lstm_bw = tf.contrib.rnn.BasicLSTMCell(lstm_size, forget_bias=1.0, state_is_tuple=False)
+
+        loss = 0.0
+
+        outputs, state = tf.nn.bidirectional_dynamic_rnn(
+            stacked_lstm_fw,
+            stacked_lstm_bw,
+            model_input,
+            sequence_length=num_frames,
+            dtype=tf.float32)
+
+        aggregated_model = getattr(video_level_models,
+                                   FLAGS.video_level_classifier_model)
+
+        # As we have Bi-LSTM, we have two output, which are not connected. So
+        # merge them
+        # state = tf.concat(2, state)
+        combined_state = tf.add(state[0], state[-1])
+
+        return aggregated_model().create_model(
+            model_input=combined_state[-1].h,
+            vocab_size=vocab_size,
+            **unused_params)
+			
+class PeeholeLstmModel2(models.BaseModel):
+    def create_model(self, model_input, vocab_size, num_frames, **unused_params):
+        """Creates a model which uses a stack of LSTMs to represent the video.
+        Args:
+          model_input: A 'batch_size' x 'max_frames' x 'num_features' matrix of
+                       input features.
+          vocab_size: The number of classes in the dataset.
+          num_frames: A vector of length 'batch' which indicates the number of
+               frames for each video (before padding).
+        Returns:
+          A dictionary with a tensor containing the probability predictions of the
+          model in the 'predictions' key. The dimensions of the tensor are
+          'batch_size' x 'num_classes'.
+        """
+        lstm_size = FLAGS.lstm_cells
+        number_of_layers = FLAGS.lstm_layers
+        weight_initializer = FLAGS.weight_initializer
+
+        if weight_initializer == 'random':
+            stacked_lstm = tf.contrib.rnn.MultiRNNCell(
+                [   tf.contrib.rnn.LSTMCell(lstm_size, forget_bias=1.0, state_is_tuple=False, use_peepholes = True,
+                                            initializer=tf.truncated_normal_initializer(stddev=1e-3),
+                                            reuse=tf.get_variable_scope().reuse)
+                    for _ in range(number_of_layers)
+                    ], state_is_tuple=False)
+        else:  # uniform weight initializations by default, for some reason
+            stacked_lstm = tf.contrib.rnn.MultiRNNCell(
+                [
+                    tf.contrib.rnn.LSTMCell(lstm_size, forget_bias=1.0, state_is_tuple=False, use_peepholes = True,
+                                            reuse=tf.get_variable_scope().reuse)
+                    for _ in range(number_of_layers)
+                    ], state_is_tuple=False)
+
+        loss = 0.0
+
+        outputs, state = tf.nn.dynamic_rnn(stacked_lstm, model_input,
+                                           sequence_length=num_frames,
+                                           dtype=tf.float32)
+
+        aggregated_model = getattr(video_level_models,
+                                   FLAGS.video_level_classifier_model)
+								   
+		mean_state = tf.reduce_mean(state)
+
+        return aggregated_model().create_model(
+            model_input=mean_state.h,
+            vocab_size=vocab_size,
+            **unused_params)

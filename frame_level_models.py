@@ -500,15 +500,15 @@ class PeeholeLstmModel(models.BaseModel):
 
         if weight_initializer == 'random':
             stacked_lstm = tf.contrib.rnn.MultiRNNCell(
-                [   tf.contrib.rnn.LSTMCell(lstm_size, forget_bias=1.0, state_is_tuple=False, use_peepholes = True,
-                                            initializer=tf.truncated_normal_initializer(stddev=1e-3),
-                                            reuse=tf.get_variable_scope().reuse)
-                    for _ in range(number_of_layers)
-                    ], state_is_tuple=False)
+                [tf.contrib.rnn.LSTMCell(lstm_size, forget_bias=1.0, state_is_tuple=False, use_peepholes=True,
+                                         initializer=tf.truncated_normal_initializer(stddev=1e-3),
+                                         reuse=tf.get_variable_scope().reuse)
+                 for _ in range(number_of_layers)
+                 ], state_is_tuple=False)
         else:  # uniform weight initializations by default, for some reason
             stacked_lstm = tf.contrib.rnn.MultiRNNCell(
                 [
-                    tf.contrib.rnn.LSTMCell(lstm_size, forget_bias=1.0, state_is_tuple=False, use_peepholes = True,
+                    tf.contrib.rnn.LSTMCell(lstm_size, forget_bias=1.0, state_is_tuple=False, use_peepholes=True,
                                             reuse=tf.get_variable_scope().reuse)
                     for _ in range(number_of_layers)
                     ], state_is_tuple=False)
@@ -526,6 +526,7 @@ class PeeholeLstmModel(models.BaseModel):
             model_input=state,
             vocab_size=vocab_size,
             **unused_params)
+
 
 class LayerNormLstmModel(models.BaseModel):
     def create_model(self, model_input, vocab_size, num_frames, **unused_params):
@@ -547,7 +548,7 @@ class LayerNormLstmModel(models.BaseModel):
         stacked_lstm = tf.contrib.rnn.MultiRNNCell(
             [
                 tf.contrib.rnn.LayerNormBasicLSTMCell(lstm_size, forget_bias=1.0, dropout_keep_prob=0.5,
-                                        reuse=tf.get_variable_scope().reuse)
+                                                      reuse=tf.get_variable_scope().reuse)
                 for _ in range(number_of_layers)
                 ])
 
@@ -623,7 +624,8 @@ class BiLstmModel(models.BaseModel):
             model_input=combined_state[-1].h,
             vocab_size=vocab_size,
             **unused_params)
-			
+
+
 class PeeholeLstmModel2(models.BaseModel):
     def create_model(self, model_input, vocab_size, num_frames, **unused_params):
         """Creates a model which uses a stack of LSTMs to represent the video.
@@ -644,15 +646,15 @@ class PeeholeLstmModel2(models.BaseModel):
 
         if weight_initializer == 'random':
             stacked_lstm = tf.contrib.rnn.MultiRNNCell(
-                [   tf.contrib.rnn.LSTMCell(lstm_size, forget_bias=1.0, state_is_tuple=False, use_peepholes = True,
-                                            initializer=tf.truncated_normal_initializer(stddev=1e-3),
-                                            reuse=tf.get_variable_scope().reuse)
-                    for _ in range(number_of_layers)
-                    ], state_is_tuple=False)
+                [tf.contrib.rnn.LSTMCell(lstm_size, forget_bias=1.0, state_is_tuple=False, use_peepholes=True,
+                                         initializer=tf.truncated_normal_initializer(stddev=1e-3),
+                                         reuse=tf.get_variable_scope().reuse)
+                 for _ in range(number_of_layers)
+                 ], state_is_tuple=False)
         else:  # uniform weight initializations by default, for some reason
             stacked_lstm = tf.contrib.rnn.MultiRNNCell(
                 [
-                    tf.contrib.rnn.LSTMCell(lstm_size, forget_bias=1.0, state_is_tuple=False, use_peepholes = True,
+                    tf.contrib.rnn.LSTMCell(lstm_size, forget_bias=1.0, state_is_tuple=False, use_peepholes=True,
                                             reuse=tf.get_variable_scope().reuse)
                     for _ in range(number_of_layers)
                     ], state_is_tuple=False)
@@ -665,8 +667,8 @@ class PeeholeLstmModel2(models.BaseModel):
 
         aggregated_model = getattr(video_level_models,
                                    FLAGS.video_level_classifier_model)
-								   
-		mean_state = tf.reduce_mean(state)
+
+        mean_state = tf.reduce_mean(state)
 
         return aggregated_model().create_model(
             model_input=mean_state.h,

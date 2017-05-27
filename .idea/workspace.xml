@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="dfc26ec7-37ab-4309-b73e-ccd6d61342c7" name="Default" comment="" />
+    <list default="true" id="dfc26ec7-37ab-4309-b73e-ccd6d61342c7" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/frame_level_models.py" afterPath="$PROJECT_DIR$/frame_level_models.py" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -30,8 +32,8 @@
       <file leaf-file-name="frame_level_models.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/frame_level_models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1004">
-              <caret line="623" column="0" lean-forward="true" selection-start-line="623" selection-start-column="0" selection-end-line="623" selection-end-column="0" />
+            <state relative-caret-position="599">
+              <caret line="661" column="18" lean-forward="true" selection-start-line="661" selection-start-column="18" selection-end-line="661" selection-end-column="18" />
               <folding>
                 <element signature="e#681#692#0" expanded="true" />
               </folding>
@@ -191,7 +193,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
@@ -207,6 +208,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -365,7 +367,7 @@
     <frame x="-11" y="-11" width="2182" height="1402" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24071462" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24024448" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -817,8 +819,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/frame_level_models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1004">
-          <caret line="623" column="0" lean-forward="true" selection-start-line="623" selection-start-column="0" selection-end-line="623" selection-end-column="0" />
+        <state relative-caret-position="599">
+          <caret line="661" column="18" lean-forward="true" selection-start-line="661" selection-start-column="18" selection-end-line="661" selection-end-column="18" />
           <folding>
             <element signature="e#681#692#0" expanded="true" />
           </folding>

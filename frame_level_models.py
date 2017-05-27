@@ -618,7 +618,7 @@ class BiLstmModel(models.BaseModel):
         # As we have Bi-LSTM, we have two output, which are not connected. So
         # merge them
         # state = tf.concat(2, state)
-        combined_state = tf.add(state[0], state[-1])
+        combined_state = state[0] + state[1]
 
         return aggregated_model().create_model(
             model_input=combined_state[-1].h,
@@ -668,9 +668,9 @@ class PeeholeLstmModel2(models.BaseModel):
         aggregated_model = getattr(video_level_models,
                                    FLAGS.video_level_classifier_model)
 
-        mean_state = tf.reduce_mean(state)
+        mean_state = tf.reduce_mean(state.h)
 
         return aggregated_model().create_model(
-            model_input=mean_state.h,
+            model_input=mean_state,
             vocab_size=vocab_size,
             **unused_params)

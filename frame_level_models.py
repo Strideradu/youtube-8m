@@ -367,7 +367,7 @@ class AttentionLstmModel(models.BaseModel):
                                                 reuse=tf.get_variable_scope().reuse), attn_length=attention_length,
                         reuse=tf.get_variable_scope().reuse)
                     for _ in range(number_of_layers)
-                    ])
+                    ], state_is_tuple=False)
         else:  # uniform weight initializations by default, for some reason
             stacked_lstm = tf.contrib.rnn.MultiRNNCell(
                 [
@@ -376,7 +376,7 @@ class AttentionLstmModel(models.BaseModel):
                                                 reuse=tf.get_variable_scope().reuse), attn_length=attention_length,
                         reuse=tf.get_variable_scope().reuse)
                     for _ in range(number_of_layers)
-                    ])
+                    ], state_is_tuple=False)
 
         loss = 0.0
 

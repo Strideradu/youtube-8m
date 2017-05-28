@@ -669,8 +669,9 @@ class PeeholeLstmModel2(models.BaseModel):
                                    FLAGS.video_level_classifier_model)
 
         h_all = []
-        for frame_state in state:
-            h_all.append(frame_state.h)
+        state_len = state.get_shape().as_list()[1]
+        for i in range(state_len):
+            h_all.append(state[i].h)
 
         mean_h = tf.reduce_mean(h_all)
 

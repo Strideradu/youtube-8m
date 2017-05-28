@@ -362,7 +362,7 @@ class AttentionLstmModel(models.BaseModel):
             stacked_lstm = tf.contrib.rnn.MultiRNNCell(
                 [
                     tf.contrib.rnn.AttentionCellWrapper(
-                        tf.contrib.rnn.LSTMCell(lstm_size, forget_bias=1.0, state_is_tuple=False,
+                        tf.contrib.rnn.LSTMCell(lstm_size, forget_bias=1.0,
                                                 initializer=tf.truncated_normal_initializer(stddev=1e-3),
                                                 reuse=tf.get_variable_scope().reuse), attn_length=attention_length,
                         reuse=tf.get_variable_scope().reuse)
@@ -372,7 +372,7 @@ class AttentionLstmModel(models.BaseModel):
             stacked_lstm = tf.contrib.rnn.MultiRNNCell(
                 [
                     tf.contrib.rnn.AttentionCellWrapper(
-                        tf.contrib.rnn.LSTMCell(lstm_size, forget_bias=1.0, state_is_tuple=False,
+                        tf.contrib.rnn.LSTMCell(lstm_size, forget_bias=1.0,
                                                 reuse=tf.get_variable_scope().reuse), attn_length=attention_length,
                         reuse=tf.get_variable_scope().reuse)
                     for _ in range(number_of_layers)

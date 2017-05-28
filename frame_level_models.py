@@ -668,9 +668,13 @@ class PeeholeLstmModel2(models.BaseModel):
         aggregated_model = getattr(video_level_models,
                                    FLAGS.video_level_classifier_model)
 
-        mean_state = tf.reduce_mean(state)
+        h_all = []
+        for frame_state in state:
+            h_all.append(frame_state.h)
+
+        mean_h = tf.reduce_mean(h_all)
 
         return aggregated_model().create_model(
-            model_input=mean_state,
+            model_input=mean_h,
             vocab_size=vocab_size,
             **unused_params)

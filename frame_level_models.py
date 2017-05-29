@@ -776,7 +776,7 @@ class SeqCNNModel(models.BaseModel):
             pooled_outputs.append(pool)
 
         num_filters_total = num_filters * len(filter_sizes)
-        h_pool = tf.concat(pooled_outputs, 3)
+        h_pool = tf.concat(pooled_outputs, 1)
         h_pool_flat = tf.reshape(h_pool, [-1, num_filters_total])
 
         dropout = tf.layers.dropout(h_pool_flat,

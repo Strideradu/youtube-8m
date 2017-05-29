@@ -32,8 +32,8 @@
       <file leaf-file-name="frame_level_models.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/frame_level_models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="788">
-              <caret line="760" column="91" lean-forward="false" selection-start-line="760" selection-start-column="91" selection-end-line="760" selection-end-column="91" />
+            <state relative-caret-position="275">
+              <caret line="699" column="8" lean-forward="false" selection-start-line="699" selection-start-column="8" selection-end-line="699" selection-end-column="8" />
               <folding>
                 <element signature="e#681#692#0" expanded="true" />
               </folding>
@@ -806,8 +806,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/frame_level_models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="788">
-          <caret line="760" column="91" lean-forward="false" selection-start-line="760" selection-start-column="91" selection-end-line="760" selection-end-column="91" />
+        <state relative-caret-position="275">
+          <caret line="699" column="8" lean-forward="false" selection-start-line="699" selection-start-column="8" selection-end-line="699" selection-end-column="8" />
           <folding>
             <element signature="e#681#692#0" expanded="true" />
           </folding>

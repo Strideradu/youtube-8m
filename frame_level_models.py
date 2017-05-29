@@ -697,7 +697,6 @@ class CNNLstmModel(models.BaseModel):
         """
         """4 different cnn layers into one rnn with sequence length 4"""
         model_input = tf.reshape(model_input, [-1, 32, 32, 300])
-        print model_input.shape
         p1conv1 = tf.layers.conv2d(
             inputs=model_input,
             filters=300,
@@ -753,7 +752,8 @@ class SeqCNNModel(models.BaseModel):
                   model in the 'predictions' key. The dimensions of the tensor are
                   'batch_size' x 'num_classes'.
                 """
-        filter_sizes = [3, 4, 5]
+        # filter_sizes = [3, 4, 5]
+        filter_sizes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20]
         num_filters = 128
         feature_size = model_input.get_shape().as_list()[2]
 

@@ -679,3 +679,111 @@ class PeeholeLstmModel2(models.BaseModel):
             model_input=mean_h,
             vocab_size=vocab_size,
             **unused_params)
+
+
+class CNNLstmModel(models.BaseModel):
+    def create_model(self, model_input, vocab_size, num_frames, **unused_params):
+        """Creates a model which uses a stack of LSTMs to represent the video.
+        Args:
+          model_input: A 'batch_size' x 'max_frames' x 'num_features' matrix of
+                       input features.
+          vocab_size: The number of classes in the dataset.
+          num_frames: A vector of length 'batch' which indicates the number of
+               frames for each video (before padding).
+        Returns:
+          A dictionary with a tensor containing the probability predictions of the
+          model in the 'predictions' key. The dimensions of the tensor are
+          'batch_size' x 'num_classes'.
+        """
+        """4 different cnn layers into one rnn with sequence length 4"""
+        model_input = tf.reshape(model_input, [-1, 32, 32, 300])
+        print model_input.shape
+        p1conv1 = tf.layers.conv2d(
+            inputs=model_input,
+            filters=300,
+            kernel_size=[3, 3],
+            padding="same",
+            activation=tf.nn.relu)
+        p1pool1 = tf.layers.max_pooling2d(inputs=p1conv1, pool_size=[2, 2], strides=2)
+        p1conv2 = tf.layers.conv2d(
+            inputs=p1pool1,
+            filters=600,
+            kernel_size=[3, 3],
+            padding="same",
+            activation=tf.nn.relu)
+        p1pool2 = tf.layers.max_pooling2d(inputs=p1conv2, pool_size=[2, 2], strides=2)
+
+        outputconv = tf.reshape(p1pool2, [-1, 64, 600])
+        lstm_size = 64
+        number_of_layers = FLAGS.lstm_layers
+
+        stacked_lstm = tf.contrib.rnn.MultiRNNCell(
+            [
+                tf.contrib.rnn.BasicLSTMCell(
+                    lstm_size, forget_bias=1.0)
+                for _ in range(number_of_layers)
+                ])
+
+        loss = 0.0
+
+        outputs, state = tf.nn.dynamic_rnn(stacked_lstm, outputconv,
+                                           sequence_length=num_frames[:600],
+                                           dtype=tf.float32)
+
+        aggregated_model = getattr(video_level_models,
+                                   FLAGS.video_level_classifier_model)
+
+        return aggregated_model().create_model(
+            model_input=state[-1].h,
+            vocab_size=vocab_size,
+            **unused_params)
+
+
+class SeqCNNModel(models.BaseModel):
+    def create_model(self, model_input, vocab_size, num_frames, **unused_params):
+        """Creates a model which uses a stack of LSTMs to represent the video.
+                Args:
+                  model_input: A 'batch_size' x 'max_frames' x 'num_features' matrix of
+                               input features.
+                  vocab_size: The number of classes in the dataset.
+                  num_frames: A vector of length 'batch' which indicates the number of
+                       frames for each video (before padding).
+                Returns:
+                  A dictionary with a tensor containing the probability predictions of the
+                  model in the 'predictions' key. The dimensions of the tensor are
+                  'batch_size' x 'num_classes'.
+                """
+        filter_sizes = [3, 4, 5]
+        num_filters = 128
+        feature_size = model_input.get_shape().as_list()[2]
+
+        pooled_outputs = []
+        for i, filter_size in enumerate(filter_sizes):
+            conv1 = tf.layer.conv2d(input=model_input,
+                                    filters=num_filters,
+                                    kernel_size=[filter_size, feature_size],
+                                    padding="same",
+                                    activation=tf.nn.relu,
+                                    bias_initializer=tf.zeros_initializer()
+                                    )
+            pool = tf.layers.max_pooling2d(inputs=conv1,
+                                           pool_size=[num_frames - filter_size + 1, 1],
+                                           padding="valid",
+                                           strides=1)
+            pooled_outputs.append(pool)
+
+        num_filters_total = num_filters * len(filter_sizes)
+        h_pool = tf.concat(pooled_outputs, 3)
+        h_pool_flat = tf.reshape(h_pool, [-1, num_filters_total])
+
+        dropout = tf.layers.dropout(h_pool_flat,
+                                    rate=0.5,
+                                    )
+
+        aggregated_model = getattr(video_level_models,
+                                   FLAGS.video_level_classifier_model)
+
+        return aggregated_model().create_model(
+            model_input=dropout,
+            vocab_size=vocab_size,
+            **unused_params)

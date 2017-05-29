@@ -764,13 +764,14 @@ class SeqCNNModel(models.BaseModel):
             conv1 = tf.layers.conv2d(inputs=model_input,
                                      filters=num_filters,
                                      kernel_size=[filter_size, feature_size],
+                                     strides= [1, 1],
                                      padding="same",
                                      activation=tf.nn.relu,
                                      bias_initializer=tf.zeros_initializer())
             pool = tf.layers.max_pooling2d(inputs=conv1,
                                            pool_size=[num_frames - filter_size + 1, 1],
                                            padding="valid",
-                                           strides=1)
+                                           strides=[1,1])
             pooled_outputs.append(pool)
 
         num_filters_total = num_filters * len(filter_sizes)

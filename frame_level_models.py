@@ -761,13 +761,12 @@ class SeqCNNModel(models.BaseModel):
         # to expand anoth dimension, the last dimension is num of channel, in our case is 1
         model_input = tf.expand_dims(model_input, 3)
         for i, filter_size in enumerate(filter_sizes):
-            conv1 = tf.layers.conv2d(input=model_input,
-                                    filters=num_filters,
-                                    kernel_size=[filter_size, feature_size],
-                                    padding="same",
-                                    activation=tf.nn.relu,
-                                    bias_initializer=tf.zeros_initializer()
-                                    )
+            conv1 = tf.layers.conv2d(inputs=model_input,
+                                     filters=num_filters,
+                                     kernel_size=[filter_size, feature_size],
+                                     padding="same",
+                                     activation=tf.nn.relu,
+                                     bias_initializer=tf.zeros_initializer())
             pool = tf.layers.max_pooling2d(inputs=conv1,
                                            pool_size=[num_frames - filter_size + 1, 1],
                                            padding="valid",

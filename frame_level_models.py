@@ -756,6 +756,7 @@ class SeqCNNModel(models.BaseModel):
         filter_sizes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20]
         num_filters = 128
         feature_size = model_input.get_shape().as_list()[2]
+        max_frames = model_input.get_shape().as_list()[1]
 
         pooled_outputs = []
         # to expand anoth dimension, the last dimension is num of channel, in our case is 1
@@ -769,9 +770,9 @@ class SeqCNNModel(models.BaseModel):
                                      activation=tf.nn.relu,
                                      bias_initializer=tf.zeros_initializer())
             pool = tf.layers.max_pooling2d(inputs=conv1,
-                                           pool_size=[num_frames - filter_size + 1, 1],
+                                           pool_size=[max_frames - filter_size + 1, 1],
                                            padding="valid",
-                                           strides=[1,1])
+                                           strides=1)
             pooled_outputs.append(pool)
 
         num_filters_total = num_filters * len(filter_sizes)

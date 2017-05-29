@@ -758,6 +758,8 @@ class SeqCNNModel(models.BaseModel):
         feature_size = model_input.get_shape().as_list()[2]
 
         pooled_outputs = []
+        # to expand anoth dimension, the last dimension is num of channel, in our case is 1
+        model_input = tf.expand_dims(model_input, 3)
         for i, filter_size in enumerate(filter_sizes):
             conv1 = tf.layer.conv2d(input=model_input,
                                     filters=num_filters,

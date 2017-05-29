@@ -767,7 +767,7 @@ class SeqCNNModel(models.BaseModel):
                                      filters=num_filters,
                                      kernel_size=[filter_size, feature_size],
                                      strides= [1, 1],
-                                     padding="same",
+                                     padding="valid",
                                      activation=tf.nn.relu,
                                      bias_initializer=tf.zeros_initializer())
             pool = tf.layers.max_pooling2d(inputs=conv1,
@@ -777,7 +777,7 @@ class SeqCNNModel(models.BaseModel):
             pooled_outputs.append(pool)
 
         num_filters_total = num_filters * len(filter_sizes)
-        h_pool = tf.concat(pooled_outputs, 1)
+        h_pool = tf.concat(pooled_outputs, 3)
         h_pool_flat = tf.reshape(h_pool, [-1, num_filters_total])
 
         dropout = tf.layers.dropout(h_pool_flat,

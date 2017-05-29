@@ -761,7 +761,7 @@ class SeqCNNModel(models.BaseModel):
         # to expand anoth dimension, the last dimension is num of channel, in our case is 1
         model_input = tf.expand_dims(model_input, 3)
         for i, filter_size in enumerate(filter_sizes):
-            conv1 = tf.layer.conv2d(input=model_input,
+            conv1 = tf.layers.conv2d(input=model_input,
                                     filters=num_filters,
                                     kernel_size=[filter_size, feature_size],
                                     padding="same",

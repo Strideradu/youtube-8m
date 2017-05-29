@@ -54,6 +54,7 @@ flags.DEFINE_string("weight_initializer", "uniform_unit_scaling_initializer",
                     "Weight initializing method, only in use now for the LSTM")
 flags.DEFINE_integer("attention_length", 8, "Size of attention window.")
 flags.DEFINE_integer("num_shifts", 512, "number of shift.")
+flags.DEFINE_integer("num_filters", 64, "number of filters in CNN.")
 
 
 class FrameLevelLogisticModel(models.BaseModel):
@@ -753,8 +754,8 @@ class SeqCNNModel(models.BaseModel):
                   'batch_size' x 'num_classes'.
                 """
         # filter_sizes = [3, 4, 5]
-        filter_sizes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20]
-        num_filters = 128
+        filter_sizes = [2, 3, 4, 5, 6, 10, 15, 20]
+        num_filters = FLAGS.num_filters
         feature_size = model_input.get_shape().as_list()[2]
         max_frames = model_input.get_shape().as_list()[1]
 

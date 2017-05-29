@@ -754,7 +754,7 @@ class SeqCNNModel(models.BaseModel):
                   'batch_size' x 'num_classes'.
                 """
         # filter_sizes = [3, 4, 5]
-        filter_sizes = [2, 3, 4, 5, 6, 10, 15, 20]
+        filter_sizes = [3, 4, 5, 10]
         num_filters = FLAGS.num_filters
         feature_size = model_input.get_shape().as_list()[2]
         max_frames = model_input.get_shape().as_list()[1]

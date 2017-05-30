@@ -786,3 +786,66 @@ class SeqCNNModel(models.BaseModel):
             model_input=dropout,
             vocab_size=vocab_size,
             **unused_params)
+
+class SeqCNNLstmModel(models.BaseModel):
+    def create_model(self, model_input, vocab_size, num_frames, **unused_params):
+        """Creates a model which uses a stack of LSTMs to represent the video.
+                Args:
+                  model_input: A 'batch_size' x 'max_frames' x 'num_features' matrix of
+                               input features.
+                  vocab_size: The number of classes in the dataset.
+                  num_frames: A vector of length 'batch' which indicates the number of
+                       frames for each video (before padding).
+                Returns:
+                  A dictionary with a tensor containing the probability predictions of the
+                  model in the 'predictions' key. The dimensions of the tensor are
+                  'batch_size' x 'num_classes'.
+                """
+        # filter_sizes = [3, 4, 5]
+        filter_sizes = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20]
+        num_filters = FLAGS.num_filters
+        feature_size = model_input.get_shape().as_list()[2]
+        max_frames = model_input.get_shape().as_list()[1]
+        lstm_size = FLAGS.lstm_cells
+        new_frames = 16
+
+        pooled_outputs = []
+        # to expand anoth dimension, the last dimension is num of channel, in our case is 1
+        model_input = tf.expand_dims(model_input, 3)
+        for i, filter_size in enumerate(filter_sizes):
+            conv1 = tf.layers.conv2d(inputs=model_input,
+                                     filters=num_filters,
+                                     kernel_size=[filter_size, feature_size],
+                                     strides= [1, 1],
+                                     padding="valid",
+                                     activation=tf.nn.relu,
+                                     bias_initializer=tf.zeros_initializer())
+            pool = tf.layers.max_pooling2d(inputs=conv1,
+                                           pool_size=[max_frames - filter_size - new_frames + 1, 1],
+                                           padding="valid",
+                                           strides=1)
+            pooled_outputs.append(pool)
+
+
+        num_filters_total = num_filters * len(filter_sizes)
+        h_pool = tf.concat(pooled_outputs, 3)
+        new_model_input = tf.reshape(h_pool, [-1, -1, num_filters_total])
+        print(new_model_input.get_shape().as_list()[1])
+        print(new_model_input.get_shape().as_list()[2])
+
+        lstm_cell = tf.contrib.rnn.LSTMCell(lstm_size, forget_bias=1.0, state_is_tuple=False, use_peepholes=True,
+                                reuse=tf.get_variable_scope().reuse)
+
+        loss = 0.0
+
+        outputs, state = tf.nn.dynamic_rnn(lstm_cell, new_model_input,
+                                           sequence_length=new_frames,
+                                           dtype=tf.float32)
+
+        aggregated_model = getattr(video_level_models,
+                                   FLAGS.video_level_classifier_model)
+
+        return aggregated_model().create_model(
+            model_input=state[-1].h,
+            vocab_size=vocab_size,
+            **unused_params)

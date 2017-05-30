@@ -838,8 +838,11 @@ class SeqCNNLstmModel(models.BaseModel):
 
         loss = 0.0
 
+        batch_size = tf.shape(model_input)[0]
+        num_frames = tf.fill([batch_size], new_frames)
+
         outputs, state = tf.nn.dynamic_rnn(lstm_cell, new_model_input,
-                                           sequence_length=new_frames,
+                                           sequence_length=num_frames,
                                            dtype=tf.float32)
 
         aggregated_model = getattr(video_level_models,

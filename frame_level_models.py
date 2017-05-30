@@ -829,7 +829,7 @@ class SeqCNNLstmModel(models.BaseModel):
 
         num_filters_total = num_filters * len(filter_sizes)
         h_pool = tf.concat(pooled_outputs, 3)
-        new_model_input = tf.reshape(h_pool, [-1, -1, num_filters_total])
+        new_model_input = tf.reshape(h_pool, [-1, new_frames, num_filters_total])
         print(new_model_input.get_shape().as_list()[1])
         print(new_model_input.get_shape().as_list()[2])
 

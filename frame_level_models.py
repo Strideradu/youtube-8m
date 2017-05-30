@@ -761,7 +761,7 @@ class SeqCNNModel(models.BaseModel):
             conv1 = tf.layers.conv2d(inputs=model_input,
                                      filters=num_filters,
                                      kernel_size=[filter_size, feature_size],
-                                     strides= [1, 1],
+                                     strides=[1, 1],
                                      padding="valid",
                                      activation=tf.nn.relu,
                                      bias_initializer=tf.zeros_initializer())
@@ -786,6 +786,7 @@ class SeqCNNModel(models.BaseModel):
             model_input=dropout,
             vocab_size=vocab_size,
             **unused_params)
+
 
 class SeqCNNLstmModel(models.BaseModel):
     def create_model(self, model_input, vocab_size, num_frames, **unused_params):
@@ -816,7 +817,7 @@ class SeqCNNLstmModel(models.BaseModel):
             conv1 = tf.layers.conv2d(inputs=model_input,
                                      filters=num_filters,
                                      kernel_size=[filter_size, feature_size],
-                                     strides= [1, 1],
+                                     strides=[1, 1],
                                      padding="valid",
                                      activation=tf.nn.relu,
                                      bias_initializer=tf.zeros_initializer())
@@ -826,7 +827,6 @@ class SeqCNNLstmModel(models.BaseModel):
                                            strides=new_frames)
             pooled_outputs.append(pool)
 
-
         num_filters_total = num_filters * len(filter_sizes)
         h_pool = tf.concat(pooled_outputs, 3)
         new_model_input = tf.squeeze(h_pool)
@@ -835,7 +835,7 @@ class SeqCNNLstmModel(models.BaseModel):
         print(new_model_input.get_shape().as_list()[2])
 
         lstm_cell = tf.contrib.rnn.LSTMCell(lstm_size, forget_bias=1.0, state_is_tuple=False, use_peepholes=True,
-                                reuse=tf.get_variable_scope().reuse)
+                                            reuse=tf.get_variable_scope().reuse)
 
         loss = 0.0
 
@@ -851,5 +851,47 @@ class SeqCNNLstmModel(models.BaseModel):
 
         return aggregated_model().create_model(
             model_input=state,
+            vocab_size=vocab_size,
+            **unused_params)
+
+
+class VideoPlusLstmModel(models.BaseModel):
+    def create_model(self, model_input, vocab_size, num_frames, **unused_params):
+        """Creates a model which uses a stack of LSTMs to represent the video.
+        Args:
+          model_input: A 'batch_size' x 'max_frames' x 'num_features' matrix of
+                       input features.
+          vocab_size: The number of classes in the dataset.
+          num_frames: A vector of length 'batch' which indicates the number of
+               frames for each video (before padding).
+        Returns:
+          A dictionary with a tensor containing the probability predictions of the
+          model in the 'predictions' key. The dimensions of the tensor are
+          'batch_size' x 'num_classes'.
+        """
+        lstm_size = FLAGS.lstm_cells
+        number_of_layers = FLAGS.lstm_layers
+
+        stacked_lstm = tf.contrib.rnn.MultiRNNCell(
+            [
+                tf.contrib.rnn.LSTMCell(
+                    lstm_size, forget_bias=1.0, use_peepholes=True, reuse=tf.get_variable_scope().reuse)
+                for _ in range(number_of_layers)
+                ])
+
+        loss = 0.0
+
+        outputs, state = tf.nn.dynamic_rnn(stacked_lstm, model_input,
+                                           sequence_length=num_frames,
+                                           dtype=tf.float32)
+
+        aggregated_model = getattr(video_level_models,
+                                   FLAGS.video_level_classifier_model)
+
+        mean_feature = tf.reduce_mean(model_input, 1)
+        concat_state = tf.concat([state[-1].h, mean_feature], 1)
+
+        return aggregated_model().create_model(
+            model_input=concat_state,
             vocab_size=vocab_size,
             **unused_params)

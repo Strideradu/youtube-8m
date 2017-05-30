@@ -821,7 +821,7 @@ class SeqCNNLstmModel(models.BaseModel):
                                      activation=tf.nn.relu,
                                      bias_initializer=tf.zeros_initializer())
             pool = tf.layers.max_pooling2d(inputs=conv1,
-                                           pool_size=[max_frames - filter_size - new_frames * new_frames + 1, 1],
+                                           pool_size=[max_frames - filter_size - (new_frames - 1) * new_frames + 1, 1],
                                            padding="valid",
                                            strides=new_frames)
             pooled_outputs.append(pool)

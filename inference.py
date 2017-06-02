@@ -35,6 +35,10 @@ FLAGS = flags.FLAGS
 if __name__ == '__main__':
     flags.DEFINE_string("train_dir", "/tmp/yt8m_model/",
                         "The directory to load the model files from.")
+    flags.DEFINE_string("checkpoint_file", "",
+                        "If provided, this specific checkpoint file will be "
+                        "used for inference. Otherwise, the latest checkpoint "
+                        "from the train_dir' argument will be used instead.")
     flags.DEFINE_string("output_file", "",
                         "The file to save the predictions to.")
     flags.DEFINE_string(
@@ -46,8 +50,8 @@ if __name__ == '__main__':
     # Model flags.
     flags.DEFINE_bool(
         "frame_features", False,
-        "If set, then --eval_data_pattern must be frame-level features. "
-        "Otherwise, --eval_data_pattern must be aggregated video-level "
+        "If set, then --input_data_pattern must be frame-level features. "
+        "Otherwise, --input_data_pattern must be aggregated video-level "
         "features. The model must also be set appropriately (i.e. to read 3D "
         "batches VS 4D batches.")
     flags.DEFINE_integer(
@@ -77,18 +81,15 @@ def format_lines(video_ids, predictions, top_k):
 
 def get_input_data_tensors(reader, data_pattern, batch_size, num_readers=1):
     """Creates the section of the graph which reads the input data.
-
     Args:
       reader: A class which parses the input data.
       data_pattern: A 'glob' style path to the data files.
       batch_size: How many examples to process at a time.
       num_readers: How many I/O threads to use.
-
     Returns:
       A tuple containing the features tensor, labels tensor, and optionally a
       tensor containing the number of frames per video. The exact dimensions
       depend on the reader being used.
-
     Raises:
       IOError: If no files matching the given pattern were found.
     """
@@ -111,11 +112,16 @@ def get_input_data_tensors(reader, data_pattern, batch_size, num_readers=1):
         return video_id_batch, video_batch, num_frames_batch
 
 
-def inference(reader, train_dir, data_pattern, out_file_location, batch_size, top_k):
+def inference(reader, checkpoint_file, train_dir, data_pattern, out_file_location, batch_size, top_k):
     with tf.Session(config=tf.ConfigProto(allow_soft_placement=True)) as sess, gfile.Open(out_file_location,
                                                                                           "w+") as out_file:
         video_id_batch, video_batch, num_frames_batch = get_input_data_tensors(reader, data_pattern, batch_size)
-        latest_checkpoint = tf.train.latest_checkpoint(train_dir)
+        if checkpoint_file:
+            if not gfile.Exists(checkpoint_file + ".meta"):
+                logging.fatal("Unable to find checkpoint file at provided location '%s'" % checkpoint_file)
+            latest_checkpoint = checkpoint_file
+        else:
+            latest_checkpoint = tf.train.latest_checkpoint(train_dir)
         if latest_checkpoint is None:
             raise Exception("unable to find a checkpoint at location: %s" % train_dir)
         else:
@@ -195,7 +201,7 @@ def main(unused_argv):
         raise ValueError("'input_data_pattern' was not specified. "
                          "Unable to continue with inference.")
 
-    inference(reader, FLAGS.train_dir, FLAGS.input_data_pattern,
+    inference(reader, FLAGS.checkpoint_file, FLAGS.train_dir, FLAGS.input_data_pattern,
               FLAGS.output_file, FLAGS.batch_size, FLAGS.top_k)
 
 

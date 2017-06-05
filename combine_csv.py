@@ -10,7 +10,10 @@ gap79 = ["predictions_eval_final.csv",
          "preiction_RandomLSTM_3.csv",
          "prediction_LayerNormLstmModel_1.csv",
          "prediction_BiLstm_1.csv",
-         "prediction_SeqCNNLstmModel_1.csv"]
+         "prediction_SeqCNNLstmModel_1.csv",
+         "prediction_SeqCNNLstmModel_313k.csv",
+         "prediction_SeqCNNLstmModel_369k.csv",
+         "moe4_final_predict.csv"]
 
 gap78 = ["predictions_3nnBnReluDropSkip_0_79.csv",
          "prediction_4LayerLstm_1.csv",
@@ -18,12 +21,19 @@ gap78 = ["predictions_3nnBnReluDropSkip_0_79.csv",
          "prediction_Grid2LSTM_1.csv",
          "predictions_dbof.csv",
          "preiction_RandomLSTM_1.csv",
-         "result_mlp2.csv",
-         "predictions_30_all_train_val_15010.csv"]
+         "prediction_mlp2.csv",
+         "predictions_30_all_train_val_15010.csv",
+         "predictions_30_all_train_val.csv",
+         "new_predictions.csv"]
 
-gap77 = ["predictions_3nnBnReluDropSkip_0_78.csv"]
+gap77 = ["predictions_3nnBnReluDropSkip_0_78.csv",
+         "predictions_3nnBnReluDropSkip.csv",
+         "predictions_3nnBnReluDropSkip_0_89_add_reg.csv",
+         "predictions_lstm_randon_1.csv",
+         "result_mlp1.csv",
+         "predictions_35_all_train_val_batch_512.csv"]
 
-sum_weight = 0.2*len(gap80) + 0.15*len(gap79) + 0.1*len(gap78)
+sum_weight = 0.2*len(gap80) + 0.15*len(gap79) + 0.1*len(gap78) + 0.05*len(gap77)
 weight_dict = {}
 for file in gap80:
     weight_dict[file] = 0.2/sum_weight
@@ -33,6 +43,9 @@ for file in gap79:
 
 for file in gap78:
     weight_dict[file] = 0.1/sum_weight
+
+for file in gap77:
+    weight_dict[file] = 0.05/sum_weight
 
 file_list = weight_dict.keys()
 num_file = len(file_list)
